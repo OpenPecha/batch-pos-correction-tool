@@ -1,0 +1,325 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/upload_text.html' as upload_text %}
+{% import 'macros/validate_length.html' as validateLength %}
+
+{% block content %}
+    <form method="POST" action="{{url_for("main.corpus_new")}}" id="form">
+    {{ validateLength.validateLength("tokens", {0: 64}) }}
+    <h1>{{ _('Create a new corpus') }}</h1>
+    <fieldset class="form-fieldset">
+        <legend>{{ _('Metadata') }}</legend>
+        <div class="form-group">
+            <label for="corpusName">{{ _('Corpus Name') }}</label>
+            <input name="name" type="text" class="form-control" id="corpusName" aria-describedby="corpusNameHelp" placeholder="Enter name of the corpus" value="{% if name %}{{name}}{%endif%}" />
+            <small id="corpusNameHelp" class="form-text text-muted">{{ _('This should be a clear name') }}</small>
+        </div>
+        <div class="form-group">
+            <label for="context_left">{{ _('Left Context') }}</label>
+            <input name="context_left" type="number" class="form-control" id="context_left" aria-describedby="context_leftHelp" value="{% if name %}{{context_left}}{%else%}3{%endif%}" />
+            <small id="context_leftHelp" class="form-text text-muted">{{ _('Number of words to display on the left of the word to annotate') }}</small>
+        </div>
+        <div class="form-group">
+            <label for="context_right">{{ _('Right Context') }}</label>
+            <input name="context_right" type="number" class="form-control" id="context_right" aria-describedby="context_rightHelp" value="{% if name %}{{context_right}}{%else%}3{%endif%}" />
+            <small id="context_rightHelp" class="form-text text-muted">{{ _('Number of words to display on the right of the word to annotate') }}</small>
+        </div>
+        <div class="form-group">
+            <label for="sep_token">{{ _('Delimiter token') }}</label>
+            <input name="sep_token" type="text" class="form-control" id="sep_token" aria-describedby="sep_tokenHelp" value="{% if name %}{{sep_token}}{%endif%}" />
+            <small id="sep_tokenHelp" class="form-text text-muted">{{ _('[Optional] A specific token that is used as a delimiter between passages.') }}</small>
+        </div>
+    </fieldset>
+    <fieldset class="form-fieldset">
+        <legend>{{ _('Layout') }}</legend>
+        <div class="form-group">
+            <label for="hideColumns">{{ _('Hide columns') }}</label>
+            <ul>
+                {% for heading in ["Lemma", "POS", "Morph", "Similar"] %}
+                <li>
+                    <input
+                        name="{{ heading.lower() }}Column"
+                        type="checkbox"
+                        value="true"
+                    />
+                    <label for="{{ heading.lower() }}Column">{{ heading }}</label>
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+    </fieldset>
+
+    <fieldset class="form-fieldset">
+        <legend>{{ _('Data') }}</legend>
+        {{ upload_text.upload_text("tokens") }}
+        <div class="form-group">
+            <label for="tokens" id="tokensLabel">{{ _('Tokens (as TSV content)') }}</label>
+            <small id="tsvHelp" class="form-text text-muted">{{ _('The TSV should at least have the headers : form, lemma, POS, morph') }}</small>
+            <small>{{ _('Example :') }}</small>
+            <pre>form	lemma	POS	morph
+SOIGNORS	seignor	NOMcom	NOMB.=p|GENRE=m|CAS=n
+or	or4	ADVgen	DEGRE=-
+escoutez	escouter	VERcjg	MODE=imp|PERS.=2|NOMB.=p</pre>
+            <textarea aria-describedby="tsvHelp" class="form-control" id="tokens" name="tsv">{% if tsv %}{{tsv}}{%endif%}</textarea>
+        </div>
+        {% if lemmatizers %}
+        <div class="form-group row">
+            <div class="col-md-3">
+                <label for="language-model" id="language-model-label" class="form-text text-muted">
+                    {{ _('Lemmatize') }}
+                </label>
+                <small class="form-text text-muted">{{ _('If your text is not lemmatized, select the language and click on lemmatize.') }}</small>
+            </div>
+            <div class="col-md-9">
+                <div class="input-group">
+                  <select class="form-control" id="language-model">
+                      {%- for lang, address in lemmatizers %}
+                    <option value="{{ address }}">{{ lang }}</option>
+                      {% endfor -%}
+                  </select>
+                  <div class="input-group-append">
+                    <button id="submit-model" class="btn btn-outline-secondary" type="button">{{ _('Lemmatize') }}</button>
+                  </div>
+                </div>
+                <div class="hidden-default font-italic" id="tokens-update">
+                    <img src="{{ url_for("static", filename="ajax-loader.gif") }}" alt="loading.." /> <span id="tokens-count">0</span> / <span id="tokens-approximate">0</span> {{ _('tokens analyzed... Total is approximately computed and could differ depending on the language...') }}
+                </div>
+                <div class="hidden-default font-italic" id="tokens-success">
+                    <div class="alert alert-success">{{ _('Operation finished with success !') }} <span id="tokens-count-success">0</span> {{ _('tokens analyzed in total.') }}</div>
+                </div>
+                <div class="hidden-default font-italic" id="tokens-fail">
+                    <div class="alert alert-danger">{{ _('Operation failed! Contact the administrator with the corpus you tried to lemmatize to investigate the issue.') }}</div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <div class="form-group row">
+            <div class="col-md-3">
+                <label for="tokenize" id="tokenize-label" class="form-text text-muted">
+                    {{ _('Tokenize (beta)') }}
+                </label>
+                <small class="form-text text-muted">{{ _('If your text is not tokenized and you do not need to pre-lemmatize it, you can use this function') }}</small>
+            </div>
+            <div class="col-md-6">
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="hyphens-remove">
+                <label class="form-check-label" for="hyphens-remove">{{ _('Remove hyphens (Be careful with this function)') }}</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="punct-keep" checked="true">
+                <label class="form-check-label" for="punct-keep">{{ _('Keep punctuation') }}</label>
+              </div>
+            </div>
+            <div class="col-md-3 text-right">
+                    <button id="tokenize" class="btn btn-outline-secondary" type="button">{{ _('Tokenize') }}</button>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="form-fieldset">
+        <legend>{{ _('Control Lists') }}</legend>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" id="checkbox_reuse" type="radio" name="control_list" value="reuse" checked/>
+                    <label class="form-check-label hide-toggle" data-toggle="#use_public" for="checkbox_reuse" id="label_checkbox_reuse">{{ _('Use an existing control list') }}</label>
+                </div>
+
+                <p class="small text-muted">{{ _('By using shared control lists, you ensure that you stick to accepted values in
+                    the academic community. You will be able to propose new values to the administrators of control lists.') }}
+                </p>
+            </div>
+            <div class="col-md-9" id="use_public">
+              <select class="form-control" id="control_list_select" name="control_list_select">
+                  {%- for class, cls_ in public_control_lists.items() %}
+                      {%  if cls_ %}
+                        <optgroup label="{{ class }}">
+                            {% for cl in cls_ %}
+                                <option id="cl_opt_{{ cl.id }}" value="{{ cl.id }}">{{ cl.name }}</option>
+                            {%  endfor %}
+                        </optgroup>
+                      {%  endif %}
+                  {% endfor -%}
+              </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" id="checkbox_create" type="radio" name="control_list" value="create"/>
+                    <label class="form-check-label hide-toggle" data-toggle="#write_your_own" for="checkbox_create" id="label_checkbox_create">{{ _('Write your own') }}</label>
+                </div>
+                <p class="small text-muted">{{ _('In case the configurations provided do not fit your need, you can create your own configuration.
+                    You will be able to share it with collaborators, propose it as a canon setting for the whole base of users.
+                    You can also later add bibliographic information about your settings.') }}
+                </p>
+            </div>
+            <div class="col-md-9" id="write_your_own" style="display: none;">
+                <div class="form-group row">
+                    <div  class="col-md-3"><label for="config" class="form-text text-muted">{{ _('Load a configuration') }}</label>
+                        <small id="config_loader_help" class="form-text text-muted">{{ _('This helps kickstarting configuration') }}</small>
+                   </div>
+
+                    <div class="col-md-9">
+                        <div class="input-group">
+                          <select class="form-control" id="config">
+                            <option value="old_french">{{ _('Ancien Français') }}</option>
+                            <option value="lasla_la">{{ _('Latin (LASLA)') }}</option>
+                          </select>
+                          <div class="input-group-append">
+                            <button id="get-config" class="btn btn-outline-secondary" type="button">{{ _('Load') }}</button>
+                          </div>
+                        </div>
+                        <div>
+                            <ul>
+                                <li style="display: none;" id="config_loader_lemma">{{ _('Lemma loaded') }}</li>
+                                <li style="display: none;" id="config_loader_POS">{{ _('POS loaded') }}</li>
+                                <li style="display: none;" id="config_loader_morph">{{ _('Morphology loaded') }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="allowed_lemma">{{ _('Allowed lemma') }}</label>
+                    <small id="allowed_lemma_help" class="form-text text-muted">{{ _('This should be formatted as a list of lemma separated by new line') }}</small>
+                    <textarea aria-describedby="allowed_lemma_help" class="form-control" id="allowed_lemma" name="allowed_lemma">{% if allowed_lemma %}{{allowed_lemma}}{%endif%}</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="allowed_POS">{{ _('Allowed POS') }}</label>
+                    <small id="allowed_POS_help" class="form-text text-muted">{{ _('This should be formatted as a list of POS separated by comma') }} <b> {{ _('and no space') }}</b></small>
+                    <textarea aria-describedby="allowed_POS_help" class="form-control" id="allowed_POS" name="allowed_POS">{% if allowed_POS %}{{allowed_POS}}{%endif%}</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="allowed_morph">{{ _('Allowed Morph (as TSV content)') }}</label>
+                    <small id="allowed_morph_help" class="form-text text-muted">{{ _('The TSV should at least have the header : label and could have a <code>readable</code> column for human') }}</small>
+                    <textarea aria-describedby="allowed_morph_help" class="form-control" id="allowed_morph" name="allowed_morph">{% if allowed_morph %}{{allowed_morph}}{%endif%}</textarea>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <button type="submit" id="submit" class="btn btn-primary">{{ _('Submit') }}</button>
+</form>
+<script type="text/javascript">
+
+$(document).ready(function() {
+
+    $("#submit-model").on("click", function(event) {
+        event.preventDefault();
+        // Get the parameters
+        var uri = $("#language-model").val(),
+            text_data = document.getElementById("tokens"),
+            update_div = document.getElementById("tokens-update"),
+            tokens_count = document.getElementById("tokens-count"),
+            tokens_count_success = document.getElementById("tokens-count-success"),
+            tokens_success = document.getElementById("tokens-success"),
+            tokens_fail = document.getElementById("tokens-fail"),
+            approximate_count = document.getElementById("tokens-approximate");
+
+        // Create the form
+        var formData = new FormData();
+        formData.append("data", text_data.value);
+
+
+        // Set up our HTTP request
+        var xhr = new XMLHttpRequest();
+        var update = function(xhr) {
+            text_data.value = xhr.responseText.replace("token\tlemma\tmorph\tpos", "form\tlemma\tmorph\tPOS");
+            text_data.scrollTop = text_data.scrollHeight;
+            tokens_count.innerText = (xhr.responseText.match(/\n/g) || []).length;
+            update_div.style.display = "block";
+        };
+        // Setup our listener to process compeleted requests
+        xhr.onreadystatechange = function () {
+
+            // Only run if the request is complete
+            if (xhr.readyState < 3 || xhr.readyState > 4) return null;
+
+            if (xhr.readyState === 3) {
+                update(xhr);
+                return null;
+            }
+
+            // Process our return data
+            if (xhr.status >= 200 && xhr.status < 300) {
+                update(xhr);
+                // What do when the request is successful
+                update_div.style.display = "none";
+                tokens_count_success.innerText = tokens_count.innerText;
+                tokens_success.style.display = "block";
+                return null;
+            } else {
+                // What to do when the request has failed
+                update_div.style.display = "none";
+                tokens_fail.style.display = "block";
+            }
+
+        };
+
+        tokens_fail.style.display = "none";
+        tokens_success.style.display = "none";
+        update_div.style.display = "block";
+        approximate_count.innerText = (text_data.value.match(/\s+/g) || []).length;
+        xhr.open('POST', uri);
+        xhr.send(formData);
+
+    });
+    var dehyphen_regex = /(\w+)\-(\s+)(\w+)/gm,
+        unicode_punct = /([!-#%-*,-/\:;?@\[-\]_\{\}\u00A1\u00A7\u00AB\u00B6\u00B7\u00BB\u00BF\u037E\u0387\u055A-\u055F\u0589\u058A\u05BE\u05C0\u05C3\u05C6\u05F3\u05F4\u0609\u060A\u060C\u060D\u061B\u061E\u061F\u066A-\u066D\u06D4\u0700-\u070D\u07F7-\u07F9\u0830-\u083E\u085E\u0964\u0965\u0970\u0AF0\u0DF4\u0E4F\u0E5A\u0E5B\u0F04-\u0F12\u0F14\u0F3A-\u0F3D\u0F85\u0FD0-\u0FD4\u0FD9\u0FDA\u104A-\u104F\u10FB\u1360-\u1368\u1400\u166D\u166E\u169B\u169C\u16EB-\u16ED\u1735\u1736\u17D4-\u17D6\u17D8-\u17DA\u1800-\u180A\u1944\u1945\u1A1E\u1A1F\u1AA0-\u1AA6\u1AA8-\u1AAD\u1B5A-\u1B60\u1BFC-\u1BFF\u1C3B-\u1C3F\u1C7E\u1C7F\u1CC0-\u1CC7\u1CD3\u2010-\u2027\u2030-\u2043\u2045-\u2051\u2053-\u205E\u207D\u207E\u208D\u208E\u2308-\u230B\u2329\u232A\u2768-\u2775\u27C5\u27C6\u27E6-\u27EF\u2983-\u2998\u29D8-\u29DB\u29FC\u29FD\u2CF9-\u2CFC\u2CFE\u2CFF\u2D70\u2E00-\u2E2E\u2E30-\u2E42\u3001-\u3003\u3008-\u3011\u3014-\u301F\u3030\u303D\u30A0\u30FB\uA4FE\uA4FF\uA60D-\uA60F\uA673\uA67E\uA6F2-\uA6F7\uA874-\uA877\uA8CE\uA8CF\uA8F8-\uA8FA\uA8FC\uA92E\uA92F\uA95F\uA9C1-\uA9CD\uA9DE\uA9DF\uAA5C-\uAA5F\uAADE\uAADF\uAAF0\uAAF1\uABEB\uFD3E\uFD3F\uFE10-\uFE19\uFE30-\uFE52\uFE54-\uFE61\uFE63\uFE68\uFE6A\uFE6B\uFF01-\uFF03\uFF05-\uFF0A\uFF0C-\uFF0F\uFF1A\uFF1B\uFF1F\uFF20\uFF3B-\uFF3D\uFF3F\uFF5B\uFF5D\uFF5F-\uFF65])/gm;
+
+    $("#tokenize").on("click", function(event) {
+       event.preventDefault();
+       var text = $("#tokens").val();
+
+       if (document.getElementById("hyphens-remove").checked === true) {
+           text = text.replace(dehyphen_regex, "$1$3$2");
+       }
+       if (document.getElementById("punct-keep").checked === true) {
+           text = text.replace(unicode_punct, " $1 ");
+       } else {
+           text = text.replace(unicode_punct, "");
+       }
+       text = text.split(/\s+/);
+
+       var output = "form\tlemma\tPOS\tmorph\n";
+       for (var token_index = 0; token_index < text.length; token_index++) {
+           if (text[token_index]) {
+               output += text[token_index] + "\t\t\t\n";
+           }
+       }
+       $("#tokens").val(output);
+    });
+    $("#get-config").on("click", function(event) {
+        event.preventDefault();
+        var uri = "{{ url_for("configurations.static", filename='folder') }}".replace("folder", $("#config").val())+"/";
+
+        $.ajax(uri+"lemma.txt").done(function(response) {
+                        $("#allowed_lemma").val(response);
+                        $("#config_loader_lemma").show();
+                    }).fail(function() {
+                        alert("Something went wrong...");
+                    });
+
+        $.ajax(uri+"POS.txt").done(function(response) {
+                        $("#allowed_POS").val(response);
+                        $("#config_loader_POS").show();
+                    }).fail(function() {
+                        alert("Something went wrong...");
+                    });
+        $.ajax(uri+"morph.txt").done(function(response) {
+                        $("#allowed_morph").val(response);
+                        $("#config_loader_morph").show();
+                    }).fail(function() {
+                        alert("Something went wrong...");
+                    });
+    });
+    var toggle = function(element, fn) {
+        console.log(element, fn);
+        $($(element).attr("data-toggle"))[fn]();
+    };
+    $(".hide-toggle").on("click", function(e) {
+        $(".hide-toggle").each(function(index, el) {
+            toggle(el, "hide");
+        });
+        toggle(this, "show");
+    });
+});
+</script>
+{% endblock %}

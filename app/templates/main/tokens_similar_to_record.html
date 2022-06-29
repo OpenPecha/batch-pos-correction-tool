@@ -1,0 +1,65 @@
+{% import 'macros/nav_macros.html' as nav %}
+{% import 'macros/tokens_macros.html' as tokens_macros %}
+
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+
+{% set visible = corpus.displayed_columns_by_name %}
+
+<h1>{{ _('Corpus') }} {{corpus.name}} - {{ _('List of tokens') }} </h1>
+
+{{ nav.render_pagination(pagination=tokens, corpus_id=corpus.id, endpoint="main.tokens_similar_to_record", record_id=record.id) }}
+
+<h2>{{ _('Change') }}</h2>
+
+<dl>
+    <dt>{{ _('User') }}</dt>
+    <dd>{{ record.user.first_name[0] }}.{{ record.user.last_name }}</dd>
+    <dt>{{ _('Date') }}</dt>
+    <dd class="datetime">{{record.created_on}}</dd>
+</dl>
+
+<table class="table table-bordered">
+    <thead>
+        <tr class="history">
+            <th class="line">{{ _('Context') }}</th>
+            {% if "lemma" in visible %}
+            <th>{{ _('Old Lemma') }}</th>
+            <th class="line">{{ _('Corr Lemma') }}</th>
+            {% endif %}
+            {% if "POS" in visible %}
+            <th>{{ _('Previous POS') }}</th>
+            <th class="line">{{ _('Actual POS') }}</th>
+            {% endif %}
+            {% if "morph" in visible %}
+            <th>{{ _('Previous Morph') }}</th>
+            <th class="line">{{ _('Actual Morph') }}</th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="history">
+            <td class="detail text">{{tokens_macros.token_context(record.word_token, "b")}}</td>
+            {% if "lemma" in visible %}
+            <td class="{% if record.lemma != record.lemma_new%}red{%endif%}">{{record.lemma}}</td>
+            <td class="line {% if record.lemma != record.lemma_new%}green{%endif%}">{{record.lemma_new}}</td>
+            {% endif %}
+            {% if "POS" in visible %}
+            <td class="{% if record.POS != record.POS_new%}red{%endif%}">{{record.POS}}</td>
+            <td class="line {% if record.POS != record.POS_new%}green{%endif%}">{{record.POS_new}}</td>
+            {% endif %}
+            {% if "morph" in visible %}
+            <td class="{% if record.morph != record.morph_new%}red{%endif%}">{{record.morph}}</td>
+            <td class="line {% if record.morph != record.morph_new%}green{%endif%}">{{record.morph_new}}</td>
+            {% endif %}
+        </tr>
+    </tbody>
+</table>
+
+<h2>{{ _('Similar matching:') }}' {{record.similar_remaining}}</h2>
+<div class="main">
+{{ tokens_macros.table(tokens, corpus=corpus, changed=changed, editable=True, checkbox=True, record=record, link_back=True) }}
+</div>
+
+{% endblock %}

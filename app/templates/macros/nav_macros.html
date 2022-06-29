@@ -1,0 +1,291 @@
+{# This macro is called on the user dashboards. In this case the administrator dashboard
+   at the route admin.index
+#}
+{% import 'macros/dashboard_macros.html' as dashboard %}
+
+{% macro render_menu_items(endpoints) %}
+    {% for endpoint, name, icon in endpoints %}
+        <li class="nav-item"><a class="nav-link {% if request.endpoint == endpoint %}active{% endif %}" href="{{ url_for(endpoint) }}">
+            {% if icon %}
+                <i class="{{ icon }}"  aria-hidden="true"></i>
+            {% endif %}
+            {{ name | safe }}
+        </a></li>
+    {% endfor %}
+{% endmacro %}
+
+{# This is called for all users (including anonymous users). It renders the basic left side of the
+   navigation bar. In the default case, the left hand side will read 'Flask-Base'. In the logged in
+   admin case, there will also be an item that links to admin/ route. I have added an example use of
+   render_menu_items.
+#}
+
+{% macro header_items(current_user) %}
+    {% set user = [] %}
+    {% if current_user.is_authenticated %}
+      {% set user = ([('main.dashboard', _('Dashboard'), 'fa fa-bars')]) %}
+    {% endif %}
+    {{ render_menu_items( user ) }}
+{% endmacro %}
+
+{# This renders the right hand side of the navigation bar. If the user is logged in, it links to
+   manage their account and logout (account routes). Otherwise, it links to register and login.
+#}
+{% macro account_items(current_user) %}
+    {% if current_user.is_authenticated %}
+      {% set endpoints = [
+        ('account.manage', _('Your Account'), 'fa fa-user-circle'),
+        ('account.logout', _('Log out'), 'fa fa-sign-out')
+      ] %}
+      {{ render_menu_items(endpoints) }}
+    {% else %}
+      {% set endpoints = [
+        ('account.register', _('Register'), 'fa fa-user-plus'),
+        ('account.login', _('Log In'), 'fa fa-sign-in')
+      ] %}
+      {{ render_menu_items(endpoints) }}
+    {% endif %}
+{% endmacro %}
+
+{% macro render_nav(current_user, corpora=[], control_lists=[]) %}
+    <nav class="navbar navbar-expand-md navbar-dark enc-colors">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-nav" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="main-nav">
+         <a class="navbar-brand {% if request.endpoint == endpoint %}active{% endif %}" href="{{ url_for('main.index') }}">
+                <i class="fa fa-home"  aria-hidden="true"></i> {{ config.APP_NAME | safe }}
+        </a>
+            <ul class="navbar-nav mr-auto">
+                {{ header_items(current_user) }}
+
+              {% if current_user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link" id="new_corpus_link" href="{{url_for("main.corpus_new")}}">{{ _('New Corpus') }}</a>
+              </li>
+              {% endif %}
+              {%- if corpora %}
+                <li class="nav-item dropdown">
+                <a id="toggle_corpus_corpora"
+                   class="nav-link dropdown-toggle"
+                   data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    Corpora
+                </a>
+                <div class="dropdown-menu">
+                    {% for corpus in corpora %}
+                        <a class="dropdown-item dd-corpus"
+                           id="dropdown_link_{{corpus.id}}" href="{{url_for("main.tokens_correct", corpus_id=corpus.id)}}">
+                            {{ corpus.name | safe }}
+                        </a>
+                    {% endfor %}
+                    </div>
+                  </li>
+              {% endif -%}
+              {%- if control_lists %}
+                <li class="nav-item dropdown" id="cl-dd">
+                <a id="toggle_controllists"
+                   class="nav-link dropdown-toggle"
+                   data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    {{ _('Control Lists') }} 
+                </a>
+                <div class="dropdown-menu">
+                    {% for control_list in control_lists %}
+                        <a class="dropdown-item dd-control_list"
+                           id="dropdown_link_cl_{{control_list.id}}" href="{{url_for("control_lists_bp.get", control_list_id=control_list.id)}}">
+                            {{ control_list.name | safe }}
+                        </a>
+                    {% endfor %}
+                    </div>
+                  </li>
+              {% endif -%}
+            </ul>
+            <ul class="navbar-nav"> 
+                  <li class="nav-item"><a class="nav-link" href="https://github.com/hipster-philology/pyrrha/issues/new/choose" target="_blank"><i class="fa fa-bug"  aria-hidden="true"></i> {{ _('Bug or request ?') }}</a></li>
+                  <li class="nav-item"><a class="nav-link" href="https://pyrrha.readthedocs.io/en/latest/" target="_blank"><i class="fa fa-question-circle"  aria-hidden="true"></i> {{ _('Help') }}</a></li>
+                {{ account_items(current_user) }}
+            </ul>
+          </div>
+    </nav>
+{% endmacro %}
+
+
+{% macro render_pagination(pagination, endpoint, get_params=[]) %}
+<div class="row">
+    <div class="col-md-6">
+        <nav aria-label="Page navigation example">
+          <ul class="pagination">
+          {%- for page in pagination.iter_pages() %}
+            {% if page %}
+              {% if page != pagination.page %}
+                <li class="page-item"><a class="page-link" href="{{ url_for(endpoint, page=page, limit=pagination.per_page, **kwargs) }}">{{ page }}</a></li>
+              {% else %}
+                <li class="page-item active"><a class="page-link" href="#">{{ page }}</a></li>
+              {% endif %}
+            {% else %}
+                <li class="page-item disabled"><a class="page-link" href="#">...</a></li>
+            {% endif %}
+          {%- endfor %}
+          </ul>
+        </nav>
+    </div>
+    <div class="col-md-6">
+        <form action="{{url_for(endpoint, **kwargs)}}" method="GET" style="max-width:160px;" >
+            {%- for name, value in kwargs.items() -%}
+                {%- if get_params and name in get_params %}
+                    <input type="hidden" name="{{name}}" value="{{value}}" />
+                {% endif %}
+            {%- endfor -%}
+            <div class="input-group input-group-sm">
+              <div class="input-group-prepend">
+                <button class="btn btn-primary" type="submit" id="button-addon1">{{ _('Go to') }}</button>
+              </div>
+              <input type="number" name="page"
+                     class="form-control" placeholder="Page" aria-label="Example text with button addon"
+                     aria-describedby="button-addon1" aria-placeholder="Page" />
+            </div>
+        </form>
+    </div>
+</div>
+{% endmacro %}
+
+{%- macro quick_nav(corpus) %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+           var last_page = localStorage.getItem("corpus-{{corpus.id}}");
+           if (last_page) {
+               var lastLink = $("#last-edit-link");
+               lastLink.removeClass("d-none");
+               lastLink.attr("href", lastLink.attr("href")+"?page="+last_page);
+           }
+        });
+    </script>
+{%  endmacro %}
+
+{% macro single_corpus_nav(corpus, current_user) %}
+
+{% set visible = corpus.displayed_columns_by_name %}
+<div class="menu-link" style="position: fixed; bottom:0; right: 0; z-index: 888;">
+    <a class="btn btn-circle btn-lg btn-light " href="#corpus-menu" aria-label="Go back to top">
+        <i class="fa fa-arrow-circle-up"></i>
+    </a>
+</div>
+<nav class="container-fluid menu-horizontal" style="background-color: #fdfdfd;" id="corpus-menu">
+    <hr />
+    <div class="row align-items-center">
+        <div class="col-md-1">
+            <div class="title text-right" ><b>{{ _('Menu') }}</b></div>
+        </div>
+        <div class="col">
+    <div class="menu-horizontal-group mx-1">
+        <div class="btn-group btn-group-sm" role="group">
+            <a class="btn btn-outline-dark title px-2">
+                {{ _('Corpus') }}
+            </a>
+            <a class="btn btn-outline-dark" title="Get corpus statistics and informations" id="stats_{{corpus.id}}" href="{{url_for("main.corpus_get", corpus_id=corpus.id)}}">
+                <i class="fa fa-tachometer"></i> {{ _('Home') }}</a>
+            <a class="btn btn-outline-dark" title="Manage corpus' settings" href="{{url_for("main.preferences", corpus_id=corpus.id)}}">
+                <i class="fa fa-cog"></i> {{ _('Preferences') }}
+            </a>
+        </div>
+        <div class="btn-group btn-group-sm" role="group">
+            <a class="btn btn-outline-dark title">
+                {{ _('Control List') }}
+            </a>
+            <a class="btn btn-outline-dark" title="Edit values in the control list" href="{{url_for("control_lists_bp.get", control_list_id=corpus.control_lists_id)}}">
+                <i class="fa fa-cogs"></i> {{ _('Edit') }}
+            </a>
+            {% if corpus.is_owned_by(current_user) or current_user.is_admin() %}
+                <a class="btn btn-outline-dark" title="Switch for another control list" href="{{url_for("main.control_list_switch", corpus_id=corpus.id)}}">
+                        <i class="fa fa-exchange"></i> {{ _('Change') }}
+                </a>
+            {% endif %}
+            <a class="btn btn-outline-dark" title="Edit value in the corpus custom dictionary" href="{{url_for("main.corpus_custom_dict", corpus_id=corpus.id)}}">
+                <i class="fa fa-book"></i> {{ _('Corpus Custom Dictionary') }}
+            </a>
+        </div>
+        <a class="btn btn-sm btn-outline-dark" title="Browse editions of the base text" href="{{url_for("main.tokens_edit_history", corpus_id=corpus.id)}}">
+            <i class="fa fa-calendar-times-o"></i> {{ _('Text history') }}
+        </a>
+        {% if corpus.is_owned_by(current_user) or current_user.is_admin() %}
+            <a class="btn btn-sm btn-outline-danger float-right" title="Delete the corpus" href="{{url_for("main.corpus_delete", corpus_id=corpus.id)}}">
+                <i class="fa fa-remove"></i> {{ _('Delete the corpus (2 steps)') }}
+            </a>
+        {% endif %}
+    </div>
+    <div class="menu-horizontal-group mx-1">
+        <a class="btn btn-outline-dark btn-sm" title="Quickly return to a bookmarked token" id="bookmark_link" href="{{ url_for("main.corpus_bookmark", corpus_id=corpus.id) }}">
+            <i class="fa fa-bookmark"></i> {{ _('Go to bookmark') }}
+        </a>
+        <div class="btn-group btn-group-sm" role="group">
+            <a class="btn btn-outline-dark title">
+                {{ _('Annotations') }}
+            </a>
+            <a class="btn btn btn-outline-dark" title="Correct annotations" href="{{ url_for("main.tokens_correct", corpus_id=corpus.id) }}">
+                <i class="fa fa-pencil"></i> {{ _('Correct') }}
+            </a>
+            <a class="btn btn-outline-dark" title="Search through the corpus and its annotations" id="corpus_{{corpus.id}}_search_tokens" href="{{url_for("main.tokens_search_through_fields", corpus_id=corpus.id)}}">
+                <i class="fa fa-search"></i> {{ _('Search') }}
+            </a>
+            <a class="btn btn-outline-dark" title="Export annotations" href="{{url_for("main.tokens_export", corpus_id=corpus.id)}}">
+                <i class="fa fa-download"></i> {{ _('Export') }}
+            </a>
+            <a class="btn btn-outline-dark" title="Browse the annotations' history" href="{{url_for("main.tokens_history", corpus_id=corpus.id)}}">
+                <i class="fa fa-list"></i> {{ _('History') }}
+            </a>
+        </div>
+        <div class="btn-group btn-group-sm" role="group">
+            <a class="btn btn-outline-dark title"><i class="fa fa-pencil"></i> {{ _('Correct unallowed ...') }}</a>
+            {% if "lemma" in visible %}
+                <a class="btn btn-outline-dark" title="Correct annotations with unallowed lemma" href="{{url_for("main.tokens_correct_unallowed", corpus_id=corpus.id, allowed_type='lemma')}}">
+                     {{ _('lemma') }}
+                </a>
+            {% endif %}
+            {% if "POS" in visible %}
+                <a class="btn btn-outline-dark" title="Correct annotations with unallowed POS" href="{{url_for("main.tokens_correct_unallowed", corpus_id=corpus.id, allowed_type='POS')}}">
+                    {{ _('POS') }}
+                </a>
+            {% endif %}
+            {% if "morph" in visible %}
+                <a class="btn btn-outline-dark" title="Correct annotations with unallowed morphology" href="{{url_for("main.tokens_correct_unallowed", corpus_id=corpus.id, allowed_type='morph')}}">
+                    {{ _('morphology') }}
+                </a>
+            {% endif %}
+        </div>
+    </div></div>
+    </div>
+    <hr />
+</nav>
+
+{% endmacro %}
+
+
+{% macro corpora_list(corpora, endpoint='', favorites=[]) %}
+    <div class="mt-5">
+        <h2>{{ _('Your corpora') }}</h2>
+
+        {{ render_pagination(corpora, endpoint, get_params=[]) }}
+
+        <div id="corpora-dashboard" class="list-group">
+            <h3 class="list-group-item bg-dark text-white">Corpora</h3>
+            {% for corpus in corpora.items %}
+                <div  class="list-group-item list-group-item-action">
+                    <div class="content container">
+                        <div class="row">
+                            <a class="col-sm-1 text-center add-fav" href="{{ url_for('main.corpus_fav', corpus_id=corpus.id) }}">
+                                <i class="fa {% if corpus in favorites %}fa-star{% else %}fa-star-o{% endif %}"></i>
+                            </a>
+                            <div class="col-sm-0"><i class="fa fa-file-text"></i></div>
+                            <a class="col-sm-11 col-md-10 col corpus-nav-link" href="{{ url_for('main.tokens_correct', corpus_id=corpus.id) }}">
+                                <div>
+                                    <span class="title">{{ corpus.name }}</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                 </div>
+            {% endfor %}
+        </div>
+        <hr />
+        {{ render_pagination(corpora, endpoint, get_params=[]) }}
+    </div>
+{% endmacro %}

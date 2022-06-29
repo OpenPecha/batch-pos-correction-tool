@@ -1,0 +1,40 @@
+{% import 'macros/nav_macros.html' as nav %}
+{% import 'control_lists/macros.html' as control_list_macros with context %}
+<!DOCTYPE html>
+<html>
+    <head>
+        {% include 'partials/_head.html' %}
+        {# Any templates that extend this template can set custom_head_tags to add scripts to their page #}
+        {% block custom_head_tags %}{% endblock %}
+    </head>
+    <body>
+        {% block nav %}
+            {{ nav.render_nav(current_user, corpora=favorites, control_lists=control_lists) }}
+        {%  endblock %}
+        {% if corpus %}
+            <div class="corpus-menu">
+                {{ nav.quick_nav(corpus) }}
+                {{ nav.single_corpus_nav(corpus, current_user=current_user) }}
+            </div>
+        {% endif %}
+
+        <div class="container-fluid" id="main-container">
+            <div class="row">
+              {%  if control_list %}
+              <div class="col bg-light col-lg-2" id="left-menu">
+                  {%- if control_list %}
+                      {{ control_list_macros.nav_control_list(control_list) }}
+                  {% endif %}
+              </div>
+              <div class="col" id="right-column">
+              {% else %}
+              <div class="col-lg-12">
+              {%  endif %}
+                {% include 'partials/_flashes.html' %}
+                {# When extended, the content block contains all the html of the webpage #}
+                {% block content %}{% endblock %}
+              </div>
+            </div>
+        </div>
+    </body>
+</html>

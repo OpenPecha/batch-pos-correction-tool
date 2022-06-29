@@ -1,0 +1,13 @@
+<p>{{ _('Dear') }} {{ user.full_name() }},</p>
+
+<p>{{ _('To confirm your new email address') }} <a href="{{ change_email_link }}">{{ _('click here') }}</a>.</p>
+
+<p>{{ _('Alternatively, you can paste the following link in your browser's address bar:') }}</p>
+
+<p>{{ change_email_link }}</p>
+
+<p>{{ _('Sincerely,') }}</p>
+
+<p>The {{ config.APP_NAME }} Team</p>
+
+<p><small>{{ _('Note: replies to this email address are not monitored.') }}</small></p>

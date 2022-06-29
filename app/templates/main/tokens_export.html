@@ -1,0 +1,19 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+
+<h1>{{ _('Corpus') }} {{corpus.name}} - {{ _('Download') }} </h1>
+
+<p>
+    <a class="btn btn-outline-primary" href="{{url_for("main.tokens_export", corpus_id=corpus.id, format="tsv")}}">
+    <i class="fa fa-th-list"></i> Pandora/Pie CSV
+    </a>
+     <a id="tei-msd" class="btn btn-outline-primary" href="{{url_for("main.tokens_export", corpus_id=corpus.id, format="tei-msd")}}">
+    <i class="fa fa-code"></i> TEI (@msd/@pos)
+    </a>
+    <a id="geste-tei" class="btn btn-outline-primary" href="{{url_for("main.tokens_export", corpus_id=corpus.id, format="tei-geste")}}">
+    <i class="fa fa-code"></i> TEI-Geste
+    </a>
+</p>
+
+{% endblock %}

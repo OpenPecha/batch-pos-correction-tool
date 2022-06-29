@@ -1,0 +1,198 @@
+{% extends 'layouts/base.html' %}
+
+{% import 'macros/header_macros.html' as header_macros %}
+
+{% block page_title %}Corpus {{corpus.name}}{% endblock %}
+
+{% set visible = corpus.displayed_columns_by_name %}
+
+{% block content %}
+    <p class="container">
+
+    {{ header_macros.render_corpus(corpus) }}
+    <div>
+        <section id="statistics">
+            <h2>{{ _('Statistics') }}</h2>
+            <div class="row">
+                <div class="offset-md-2 col-md-2 stats-fact">
+                    <i class="fa fa-book fa-3x"></i>
+                    <em>{{stats.word_count|thousands}}</em>
+                    {{ _('words') }}
+                </div>
+                <div class="col-md-2 stats-fact">
+                    <i class="fa fa-edit fa-3x"></i>
+                    <em>{{stats.changes|thousands}}</em>
+                    {{ _('annotations') }} <br />{{ _('corrected') }}
+                </div>
+                <div class="col-md-2 stats-fact">
+                    <i class="fa fa-bug fa-3x"></i>
+                    <em>{{stats.unallowed|thousands}}</em>
+                    {{ _('unallowed') }} <br /> {{ _('values') }}
+                </div>
+                <div class="col-md-2 stats-fact">
+                    <i class="fa fa-strikethrough fa-3x"></i>
+                    <em>{{stats.forms_edited|thousands}}</em>
+                    {{ _('forms') }} <br /> {{ _('edited') }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="offset-md-3 col-md-2">
+                    {% if "lemma" in visible %}
+                    <div class="single-chart">
+                        <svg viewBox="0 0 36 36" class="circular-chart green">
+                            <path class="circle-bg"
+                            d="M18 2.0845
+                            a 15.9155 15.9155 0 0 1 0 31.831
+                            a 15.9155 15.9155 0 0 1 0 -31.831"
+                            ></path>
+                            <path class="circle"
+                            stroke-dasharray="{{ 100 - stats.lemma_acc|int}}, 100"
+                            d="M18 2.0845
+                            a 15.9155 15.9155 0 0 1 0 31.831
+                            a 15.9155 15.9155 0 0 1 0 -31.831"
+                            ></path>
+                            <text x="18" y="20.35" class="percentage">{{'%0.2f' % (100 - stats.lemma_acc)}}%</text>
+                        </svg>
+                        <p class="stats-info">
+                        {{ _('lemma were correct from lemmatization. It means you corrected') }} {{stats.lemma_count}} {{ _('lemma.') }}
+                        </p>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="col-md-2">
+                    {% if "morph" in visible %}
+                    <div class="single-chart">
+                        <svg viewBox="0 0 36 36" class="circular-chart green">
+                            <path class="circle-bg"
+                                d="M18 2.0845
+                                a 15.9155 15.9155 0 0 1 0 31.831
+                                a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                            <path class="circle"
+                                stroke-dasharray="{{ 100 - stats.morph_acc|int}}, 100"
+                                d="M18 2.0845
+                                a 15.9155 15.9155 0 0 1 0 31.831
+                                a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                            <text x="18" y="20.35" class="percentage">{{'%0.2f' % (100 - stats.morph_acc)}}%</text>
+                        </svg>
+                        <p class="stats-info">
+                        {{ _('morphologies were correct from lemmatization. It means you corrected') }} {{stats.morph_count}} {{ _('morphologies.') }}
+                        </p>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="col-md-2">
+                    {% if "POS" in visible %}
+                    <div class="single-chart">
+                        <svg viewBox="0 0 36 36" class="circular-chart green">
+                            <path class="circle-bg"
+                            d="M18 2.0845
+                            a 15.9155 15.9155 0 0 1 0 31.831
+                            a 15.9155 15.9155 0 0 1 0 -31.831"
+                            ></path>
+                            <path class="circle"
+                            stroke-dasharray="{{ 100 - stats.pos_acc|int}}, 100"
+                            d="M18 2.0845
+                            a 15.9155 15.9155 0 0 1 0 31.831
+                            a 15.9155 15.9155 0 0 1 0 -31.831"
+                            ></path>
+                            <text x="18" y="20.35" class="percentage">{{'%0.2f' % (100 - stats.pos_acc)}}%</text>
+                        </svg>
+                        <p class="stats-info">
+                        {{ _('POS were correct from lemmatization. It means you corrected') }} {{stats.pos_count}} {{ _('POS.') }}
+                        </p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <h3>{{ _('Annotations over time') }}</h3>
+            <div class="row">
+                <div class="offset-md-3 col-md-6">
+                    <div id="corrections-per-day" class="ct-chart"></div>
+                </div>
+            </div>
+            <h3>{{ _('Most common corrections') }}</h3>
+            <form action="{{url_for('.corpus_get', corpus_id=corpus.id)}}" method="GET" class="col-md-2">
+                <div class="input-group mb-3 input-group-sm">
+                  <input type="number" name="limit"
+                         class="form-control" placeholder="" aria-label="Example text with button addon"
+                         aria-describedby="button-addon1" value="10" />
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="submit" id="button-addon1">{{ _('See more') }}</button>
+                  </div>
+                </div>
+            </form>
+            <div class="row">
+                <div class="col-lg-3">
+                    {% if "lemma" in visible %}
+                    <h4>{{ _('Lemma') }}</h4>
+                    <table class="table table-xs table-striped">
+                        <thead class="thead-dark"><tr><th>{{ _('Count') }}</th><th>{{ _('Corrected') }}</th><th>{{ _('Original') }}</th></tr></thead>
+                        <tbody>
+                            {% for count, lemma_new, lemma in lemma_cor %}
+                            <tr><td>{{count}}</td><td>{{lemma_new}}</td><td>{{lemma}}</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% endif %}
+                </div>
+                <div class="col-lg-6">
+                    {% if "morph" in visible %}
+                    <h4>{{ _('Morphology') }}</h4>
+                    <table class="table table-xs table-striped">
+                        <thead class="thead-dark"><tr><th>{{ _('Count') }}</th><th>{{ _('Corrected') }}</th><th>{{ _('Original') }}</th></tr></thead>
+                        <tbody>
+                            {% for count, lemma_new, lemma in morph_cor %}
+                            <tr><td>{{count}}</td><td>{{lemma_new}}</td><td>{{lemma}}</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% endif %}
+                </div>
+                <div class="col-lg-3">
+                    {% if "POS" in visible %}
+                    <h4>{{ _('POS') }}</h4>
+                    <table class="table table-xs table-striped">
+                        <thead class="thead-dark"><tr><th>{{ _('Count') }}</th><th>{{ _('Corrected') }}</th><th>{{ _('Original') }}</th></tr></thead>
+                        <tbody>
+                            {% for count, lemma_new, lemma in pos_cor %}
+                            <tr><td>{{count}}</td><td>{{lemma_new}}</td><td>{{lemma}}</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}
+{% block custom_head_tags %}
+<link rel="stylesheet" href="{{url_for("static", filename="css/chartist.css")}}" />
+<script type="text/javascript" src="{{url_for("static", filename="js/chartist.js")}}"></script>
+<script type="text/javascript" src="{{url_for("static", filename="js/moments.js")}}"></script>
+<script type="text/javascript">
+    'use strict';
+    const stats = {{ corpus.changes_per_day()|json|safe }};
+    const options = {
+            fullWidth: true,
+            axisX: {
+                type: Chartist.FixedScaleAxis,
+                divisor: 5,
+                labelInterpolationFnc: function(value) {
+                    return moment(value).format('MMM D');
+                }
+            },
+            height: 300
+        };
+    const data = {
+          series: [
+              stats.map((cnt_and_day) => {
+                  return {x : Date.parse(cnt_and_day[1]), y: cnt_and_day[0]};
+              })
+          ]
+        }
+    $(document).ready(function() {
+        new Chartist.Line('#corrections-per-day', data, options);
+    });
+
+</script>
+{% endblock %}

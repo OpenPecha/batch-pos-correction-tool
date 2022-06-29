@@ -4,7 +4,7 @@
   <br>
 </h1>
 
-<h3 align="center">Template</h3>
+<h3 align="center">Pyrrha-bo</h3>
 
 
 <!-- Replace the title of the repository -->
@@ -26,7 +26,7 @@ The template repo to be used across all repos.
 ## Owner
 
 - [@ngawangtrinley](https://github.com/ngawangtrinley)
-- [@mikkokotila](https://github.com/mikkokotila)
+- [@lungsang-bod](https://github.com/lungsang-bod)
 
 <!-- This section lists the owners of the repo -->
 

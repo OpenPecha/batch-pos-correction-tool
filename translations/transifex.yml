@@ -1,0 +1,7 @@
+git:
+  filters:
+    - filter_type: file
+      file_format: PO
+      source_language: en
+      source_file: translations/bo_CN/LC_MESSAGES/messages.po
+      translation_files_expression: 'translations/bo_CN/LC_MESSAGES/messages.po'

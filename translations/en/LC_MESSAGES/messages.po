@@ -42,6 +42,11 @@ msgid ""
 "preferred to use email so that discussion could be rich\n"
 "            when needed."
 msgstr ""
+"This page is built so that you can contact administrators of a control "
+"list to propose\n"
+"            new lemma, POS or morphologies accepted values. We have "
+"preferred to use email so that discussion could be rich\n"
+"            when needed."
 
 #: app/templates/control_lists/control_list.html:10
 #: app/templates/control_lists/information_edit.html:10
@@ -74,6 +79,8 @@ msgid ""
 "The following pages are made to completely rewrite control lists. Use "
 "with caution !"
 msgstr ""
+"The following pages are made to completely rewrite control lists. Use "
+"with caution !"
 
 #: app/templates/control_lists/control_list.html:32
 msgid "Rewrite Lemma List"
@@ -124,6 +131,9 @@ msgid ""
 "        about how to tag using your control list. Can link to external "
 "data and use"
 msgstr ""
+"All the relevant information that might be of help\n"
+"        about how to tag using your control list. Can link to external "
+"data and use"
 
 #: app/templates/control_lists/information_edit.html:35
 #: app/templates/main/control_list_switch.html:29
@@ -330,6 +340,9 @@ msgid ""
 " remove\n"
 "                                    accesses to this"
 msgstr ""
+"The user will be able to use the post-correction tools but also grant and"
+" remove\n"
+"                                    accesses to this"
 
 #: app/templates/macros/header_macros.html:2
 #: app/templates/macros/nav_macros.html:182
@@ -492,6 +505,10 @@ msgid ""
 "                    can be given after a tabulation (4 spaces are "
 "automatically transformed into tabulation). eg."
 msgstr ""
+"List of supplementaries morph for this corpus. One per line, a human "
+"readable version of the code\n"
+"                    can be given after a tabulation (4 spaces are "
+"automatically transformed into tabulation). eg."
 
 #: app/templates/main/corpus_custom_dictionary.html:36
 msgid "Morph=MyMorph    My human readable morph"
@@ -671,12 +688,18 @@ msgid ""
 "If your text is not lemmatized, select the language and click on "
 "lemmatize."
 msgstr ""
+"If your text is not lemmatized, select the language and click on "
+"lemmatize."
+"If your text is not lemmatized, select the language and click on "
+"lemmatize."
 
 #: app/templates/main/corpus_new.html:84
 msgid ""
 "tokens analyzed... Total is approximately computed and could differ "
 "depending on the language..."
 msgstr ""
+"tokens analyzed... Total is approximately computed and could differ "
+"depending on the language..."
 
 #: app/templates/main/corpus_new.html:87
 msgid "Operation finished with success !"
@@ -691,6 +714,8 @@ msgid ""
 "Operation failed! Contact the administrator with the corpus you tried to "
 "lemmatize to investigate the issue."
 msgstr ""
+"Operation failed! Contact the administrator with the corpus you tried to "
+"lemmatize to investigate the issue."
 
 #: app/templates/main/corpus_new.html:98
 msgid "Tokenize (beta)"
@@ -701,6 +726,8 @@ msgid ""
 "If your text is not tokenized and you do not need to pre-lemmatize it, "
 "you can use this function"
 msgstr ""
+"If your text is not tokenized and you do not need to pre-lemmatize it, "
+"you can use this function"
 
 #: app/templates/main/corpus_new.html:105
 msgid "Remove hyphens (Be careful with this function)"
@@ -725,6 +752,10 @@ msgid ""
 "                    the academic community. You will be able to propose "
 "new values to the administrators of control lists."
 msgstr ""
+"By using shared control lists, you ensure that you stick to accepted "
+"values in\n"
+"                    the academic community. You will be able to propose "
+"new values to the administrators of control lists."
 
 #: app/templates/main/corpus_new.html:148
 msgid "Write your own"
@@ -739,6 +770,12 @@ msgid ""
 "                    You can also later add bibliographic information "
 "about your settings."
 msgstr ""
+"In case the configurations provided do not fit your need, you can create "
+"your own configuration.\n"
+"                    You will be able to share it with collaborators, "
+"propose it as a canon setting for the whole base of users.\n"
+"                    You can also later add bibliographic information "
+"about your settings."
 
 #: app/templates/main/corpus_new.html:157
 msgid "Load a configuration"
@@ -801,12 +838,16 @@ msgid ""
 "The TSV should at least have the header : label and could have a "
 "<code>readable</code> column for human"
 msgstr ""
+"The TSV should at least have the header : label and could have a "
+"<code>readable</code> column for human"
 
 #: app/templates/main/corpus_preferences.html:23
 msgid ""
 "[Optional] A specific token that is used as a delimiter\n"
 "                    between passages."
 msgstr ""
+"[Optional] A specific token that is used as a delimiter\n"
+"                    between passages."
 
 #: app/templates/main/dashboard.html:9
 msgid "User Dashboard"

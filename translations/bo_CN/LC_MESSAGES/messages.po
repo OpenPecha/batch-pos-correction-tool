@@ -23,15 +23,15 @@ msgstr ""
 
 #: app/templates/account/login.html:7
 msgid "Log in"
-msgstr ""
+msgstr "ཐོ་འཇུག"
 
 #: app/templates/account/login.html:22
 msgid "Forgot password?"
-msgstr ""
+msgstr "གསང་གྲངས་མི་དྲན་ནམ།"
 
 #: app/templates/account/register.html:8
 msgid "Create an account"
-msgstr ""
+msgstr "ཐོ་འགོད།"
 
 #: app/templates/control_lists/contact.html:8
 msgid "Contact control lists administrators"
@@ -64,7 +64,7 @@ msgstr ""
 
 #: app/templates/control_lists/control_list.html:22
 msgid "Owners"
-msgstr ""
+msgstr "དོ་དམ་པ།"
 
 #: app/templates/control_lists/control_list.html:29
 msgid "Rewrite"
@@ -170,7 +170,7 @@ msgstr ""
 
 #: app/templates/control_lists/macros.html:24
 msgid "Rename"
-msgstr ""
+msgstr "མིང་གསར་བརྗེ།"
 
 #: app/templates/control_lists/macros.html:27
 msgid "Edit informations"
@@ -182,19 +182,19 @@ msgstr ""
 
 #: app/templates/control_lists/read_lemma.html:15
 msgid "Add new lemma"
-msgstr ""
+msgstr "མ་ཚིག་གསར་སྣོན།"
 
 #: app/templates/control_lists/read_lemma.html:18
 msgid "Save the new lemmas"
-msgstr ""
+msgstr "མ་ཚིག་གསར་པ་ཉར།"
 
 #: app/templates/control_lists/read_lemma.html:20
 msgid "Saving"
-msgstr ""
+msgstr "ཉར་མུས།"
 
 #: app/templates/control_lists/read_lemma.html:21
 msgid "Saved"
-msgstr ""
+msgstr "ཉར་ཟིན།"
 
 #: app/templates/control_lists/read_lemma.html:22
 msgid "Error:"
@@ -281,7 +281,7 @@ msgstr "སྐད་མཛོད།"
 #: app/templates/macros/dashboard_macros.html:142
 #: app/templates/macros/nav_macros.html:89
 msgid "Control Lists"
-msgstr ""
+msgstr "གཏན་འབེབ་ཟིན་པའི་ཐོ་གཞུང་།"
 
 #: app/templates/macros/dashboard_macros.html:158
 msgid "Back to dashboard"
@@ -294,7 +294,7 @@ msgstr ""
 #: app/templates/macros/dashboard_macros.html:165
 #: app/templates/macros/dashboard_macros.html:168
 msgid "users"
-msgstr ""
+msgstr "སྤྱོད་མཁན།"
 
 #: app/templates/macros/dashboard_macros.html:166
 msgid "Add or remove"
@@ -318,7 +318,7 @@ msgstr ""
 
 #: app/templates/macros/dashboard_macros.html:185
 msgid "Owner"
-msgstr ""
+msgstr "བདག་པོ།"
 
 #: app/templates/macros/dashboard_macros.html:225
 msgid "Grant access to a user"

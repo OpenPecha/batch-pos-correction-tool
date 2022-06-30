@@ -23,15 +23,15 @@ msgstr ""
 
 #: app/templates/account/login.html:7
 msgid "Log in"
-msgstr ""
+msgstr "ཐོ་འཇུག"
 
 #: app/templates/account/login.html:22
 msgid "Forgot password?"
-msgstr ""
+msgstr "གསང་ཨང་བརྗེད་སོང་།"
 
 #: app/templates/account/register.html:8
 msgid "Create an account"
-msgstr ""
+msgstr "ཐོ་འགོད།"
 
 #: app/templates/control_lists/contact.html:8
 msgid "Contact control lists administrators"

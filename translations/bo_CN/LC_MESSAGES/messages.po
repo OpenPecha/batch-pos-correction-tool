@@ -343,7 +343,7 @@ msgstr ""
 #: app/templates/main/tokens_similar_to_record.html:10
 #: app/templates/main/tokens_similar_to_token.html:10
 msgid "Corpus"
-msgstr ""
+msgstr "སྐད་མཛོད།"
 
 #: app/templates/macros/nav_macros.html:26
 msgid "Dashboard"
@@ -363,7 +363,7 @@ msgstr ""
 
 #: app/templates/macros/nav_macros.html:64
 msgid "New Corpus"
-msgstr ""
+msgstr "སྐད་མཛོད་གསར་པ།"
 
 #: app/templates/macros/nav_macros.html:103
 msgid "Bug or request ?"
@@ -405,7 +405,7 @@ msgstr ""
 
 #: app/templates/macros/nav_macros.html:203
 msgid "Corpus Custom Dictionary"
-msgstr ""
+msgstr "སྐད་མཛོད་འདི་ཉིད་ཀྱི་ཚིག་མཛོད།"
 
 #: app/templates/macros/nav_macros.html:207
 msgid "Text history"
@@ -590,7 +590,7 @@ msgstr ""
 
 #: app/templates/main/corpus_new.html:8
 msgid "Create a new corpus"
-msgstr ""
+msgstr "སྐད་མཛོད་གསར་བཟོ།"
 
 #: app/templates/main/corpus_new.html:10
 msgid "Metadata"
@@ -598,7 +598,7 @@ msgstr ""
 
 #: app/templates/main/corpus_new.html:12
 msgid "Corpus Name"
-msgstr ""
+msgstr "སྐད་མཛོད་མིང་།"
 
 #: app/templates/main/corpus_new.html:14
 msgid "This should be a clear name"
@@ -884,7 +884,7 @@ msgstr ""
 
 #: app/templates/main/tokens_correct_unallowed.html:8
 msgid "Corpus {{corpus.name}} - List of tokens"
-msgstr ""
+msgstr "{{corpus.name}} སྐད་མཛོད་ཀྱི་ཚིག་ཐོ།"
 
 #: app/templates/main/tokens_del_row.html:7
 msgid "Remove a token"
@@ -946,7 +946,7 @@ msgstr ""
 
 #: app/templates/main/tokens_search_through_fields.html:10
 msgid "Search tokens within the corpus"
-msgstr ""
+msgstr "སྐད་མཛོད་ནང་དུ་མ་ཚིག་འཚོལ་བཤེར།"
 
 #: app/templates/main/tokens_search_through_fields.html:64
 msgid "* can be used to match partial words, eg."

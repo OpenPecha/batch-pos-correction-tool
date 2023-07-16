@@ -637,7 +637,7 @@ msgstr ""
 #: app/templates/main/corpus_new.html:22
 #: app/templates/main/corpus_preferences.html:45
 msgid "Right Context"
-msgstr "Right Context"
+msgstr "གཡས་ཕྱོགས་ཀྱི་ཚིག"
 
 #: app/templates/main/corpus_new.html:24
 #: app/templates/main/corpus_preferences.html:58

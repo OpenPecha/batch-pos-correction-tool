@@ -187,7 +187,7 @@ msgstr "གནས་ཚུལ་རྩོམ་སྒྲིག་བྱེད།
 
 #: app/templates/control_lists/read_lemma.html:8
 msgid "Control List for Lemmas"
-msgstr "Lemmas ཡི་སྟངས་འཛིན་ཐོ་གཞུང་།"
+msgstr "མ་ཤིག་གི་སྟངས་འཛིན་ཐོ་གཞུང་།"
 
 #: app/templates/control_lists/read_lemma.html:15
 msgid "Add new lemma"

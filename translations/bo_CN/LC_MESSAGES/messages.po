@@ -626,7 +626,7 @@ msgstr "འདི་མིང་གསལ་ཁ་དོད་པ་ཞིག་
 #: app/templates/main/corpus_new.html:17
 #: app/templates/main/corpus_preferences.html:28
 msgid "Left Context"
-msgstr "Left Context"
+msgstr "གཡོན་ཕྱོགས་ཀྱི་ཚིག"
 
 #: app/templates/main/corpus_new.html:19
 #: app/templates/main/corpus_preferences.html:41

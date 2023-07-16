@@ -424,7 +424,7 @@ msgstr "སློབ་དེབ་ཀྱི་ལོ་རྒྱུས།"
 
 #: app/templates/macros/nav_macros.html:211
 msgid "Delete the corpus (2 steps)"
-msgstr "སྐད་མཛོད་དེ་ (2 steps) སུབ།"
+msgstr "སྐད་མཛོད་དེ་རིམ་པ་གཉིས་བརྒྱུད་དེ་སུབ།"
 
 #: app/templates/macros/nav_macros.html:217
 msgid "Go to bookmark"

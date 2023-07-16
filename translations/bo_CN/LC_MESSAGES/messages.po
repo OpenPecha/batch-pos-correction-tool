@@ -85,7 +85,7 @@ msgstr ""
 
 #: app/templates/control_lists/control_list.html:32
 msgid "Rewrite Lemma List"
-msgstr "མ་ཚིག་ཡི་ཐོ་བསྐྱར་འབྲི་བྱེད།"
+msgstr "མ་ཚིག་གི་ཐོ་བསྐྱར་འབྲི་བྱེད།"
 
 #: app/templates/control_lists/control_list.html:33
 msgid "Rewrite POS List"

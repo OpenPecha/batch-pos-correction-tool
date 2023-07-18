@@ -595,7 +595,7 @@ msgstr "གྲངས་བརྩི།"
 #: app/templates/main/corpus_info.html:142
 #: app/templates/main/corpus_info.html:155
 msgid "Corrected"
-msgstr "དག་སྒྲིག་ཟིན་པ།"
+msgstr "དག་སྒྲིག་ཟིན་པ་།"
 
 #: app/templates/main/corpus_info.html:129
 #: app/templates/main/corpus_info.html:142
